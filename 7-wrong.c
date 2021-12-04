@@ -1,9 +1,8 @@
 #include "binary_trees.h"
 
 
-int isvisited6(binary_tree_t *node, binary_tree_t **arr, int len);
 /**
- *binary_tree_preorder - Goes through a binary tree using preorder
+ *binary_tree_inorder - Goes through a binary tree using inorder
  *transversal
  *
  *@func: And func is a pointer to a function to call for each node.
@@ -11,7 +10,7 @@ int isvisited6(binary_tree_t *node, binary_tree_t **arr, int len);
  *@tree: Pointer to the root node of the tree to transverse
  *Return: Nothing
  */
-void binary_tree_preorder(const binary_tree_t *tree, void (*func)(int))
+void binary_tree_inorder(const binary_tree_t *tree, void (*func)(int))
 {
 binary_tree_t *temp;
 int i;
@@ -30,14 +29,10 @@ k = 0;
 
 /* stores addresses of visited nodes */
 arr = malloc(sizeof(binary_tree_t *) * 1);
-
 if (arr == NULL)
 return;
-
 arr[0] = NULL;
 
-/* transverse the root first */
-(*func)(tree->n);
 temp = (binary_tree_t *)tree;
  
 /**
@@ -47,101 +42,111 @@ temp = (binary_tree_t *)tree;
 */
 for(i = 0; j < 2; i++)
 {
-/* checks if current node has a left child */
 if (temp->left != NULL)
 {
-/**
- * if it does, finds the leftmost child while transversing
- * or visiting each of this children until a leaf node is found.
-*/
-while (0 == 0)
+if (isvisited(temp, arr, k+1, 10) == 0 || temp->left == NULL)
 {
-while (temp->left != NULL)
+if (isvisited(temp, arr, k+1, 20) == 0 || temp->right == NULL)
 {
-temp = temp->left;
 (*func)(temp->n);
 arr[k] = temp;
 k++;
 arr = reallocarray(arr, k+1, sizeof(binary_tree_t));
 arr[k] = NULL;
-}
-/** 
- * if a leftmost child has a right child
- * visit that child too until.
- */
-if (temp->right != NULL)
-{
-temp = temp->right;
-(*func)(temp->n);
-arr[k] = temp;
-k++;
-arr = reallocarray(arr, k+1, sizeof(binary_tree_t));
-arr[k] = NULL;
-}
-
-if (binary_tree_is_leaf(temp) == 1)
-  break;
-}
-
-/**
- *If this current node doesnt have a right child nor a left child.
- *Move backwards until a node with a right child that has not
- *been visited is found.
- *This is the usefulness of arr.
- */
 temp = temp->parent;
-while (isvisited6(temp, arr, k+1) == 0 || temp->right == NULL)
-  temp = temp->parent;
-if (isvisited6(temp, arr, k+1) == 2)
+if (binary_tree_is_root(temp) == 1)
 {
 j += 1;
 if (j == 2)
-break;
-}
-
-temp = temp->right;
+{
 (*func)(temp->n);
 arr[k] = temp;
 k++;
 arr = reallocarray(arr, k+1, sizeof(binary_tree_t));
 arr[k] = NULL;
+temp = NULL;
+break;
+}
+else
+temp = temp->right;
+continue;
+}
+}
+else
+{
+temp = temp->right;
+continue;
+}
+} 
+
+/* isvisited first statement */
+else
+{
+while (0 == 0)
+{
+while (temp->left != NULL)
+temp = temp->left;
+
+if (temp->right != NULL)
+{
+temp = temp->right;
+continue;
+}
+
+if (binary_tree_is_leaf(temp) == 1)
+{
+(*func)(temp->n);
+arr[k] = temp;
+k++;
+arr = reallocarray(arr, k+1, sizeof(binary_tree_t));
+arr[k] = NULL;
+temp = temp->parent;
+break;
+}
+}
+}
+
+if (isvisited(temp, arr, k+1, 20) == 0 || temp->right == NULL)
+{
+(*func)(temp->n);
+arr[k] = temp;
+k++;
+arr = reallocarray(arr, k+1, sizeof(binary_tree_t));
+arr[k] = NULL;
+temp = temp->parent;
+}
+else
+temp = temp->right;
+
 }
 
 else if (temp->right != NULL)
 {
-temp = temp->right;
+if (isvisited(temp, arr, k+1, 20) == 0 || temp->right == NULL)
+{
 (*func)(temp->n);
 arr[k] = temp;
 k++;
 arr = reallocarray(arr, k+1, sizeof(binary_tree_t));
 arr[k] = NULL;
+temp = temp->parent;
+}
 }
 
 else
 {
-temp = temp->parent;
-while (isvisited6(temp, arr, k+1) == 0 || temp->right == NULL)
-  temp = temp->parent;
-if (isvisited6(temp, arr, k+1) == 2)
-{
-j += 1;
-if (j == 2)
-break;
-}
-
-temp = temp->right;
 (*func)(temp->n);
 arr[k] = temp;
 k++;
 arr = reallocarray(arr, k+1, sizeof(binary_tree_t));
 arr[k] = NULL;
+temp = temp->parent;
 }
 }
 
 for (i = 0; i < k+1; i++)
   free(arr[i]);
 free(arr);
-
 return;
 }
 
@@ -154,10 +159,12 @@ return;
  *Return: 0 if node has been visited, 2 if the node
  *is the root node else 1
  */
-int isvisited6(binary_tree_t *node, binary_tree_t **arr, int len)
+int isvisited(binary_tree_t *node, binary_tree_t **arr, int len, int ind)
 {
 int c;
 c = 0;
+if (ind == 20)
+{
 for (c = 0; c < len; c++)
 {
 if (binary_tree_is_root(node) == 1)
@@ -165,6 +172,18 @@ return (2);
 else if (node->right == arr[c])
 return (0);
 }
+}
+else if (ind == 10)
+{
+for (c = 0; c < len; c++)
+{
+if (binary_tree_is_root(node) == 1)
+return (2);
+else if (node->left == arr[c])
+return (0);
+}
+}
+
 return (1);
 }
 

@@ -11,7 +11,6 @@ void binary_tree_delete(binary_tree_t *tree)
 {
 binary_tree_t *temp1;
 binary_tree_t *temp2;
-binary_tree_t *temp3 __attribute__((unused));
 
 if (tree == NULL)
 return;
