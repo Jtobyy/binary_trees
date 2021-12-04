@@ -43,5 +43,6 @@ void binary_tree_inorder(const binary_tree_t *tree, void (*func)(int));
 void binary_tree_postorder(const binary_tree_t *tree, void (*func)(int));
 int isvisited(binary_tree_t *node, binary_tree_t **arr, int len, int ind);
 size_t binary_tree_height(const binary_tree_t *tree);
+binary_tree_t *binary_tree_sibling(binary_tree_t *node);
 
 #endif /* _BINARY_TREE_H_ */
